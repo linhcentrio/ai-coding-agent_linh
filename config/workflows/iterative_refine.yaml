@@ -1,0 +1,42 @@
+# Iterative Refinement Workflow
+# Round-robin: Agents take turns improving until approved
+
+name: iterative_refine
+description: Round-robin refinement until quality threshold met
+
+mode: round_robin
+
+max_rounds: 3
+
+steps:
+  - agent: codex
+    role: implement
+    prompt_template: |
+      {task}
+      
+      Current state:
+      {current_state}
+      
+      History:
+      {history}
+      
+      Round: {round}
+      
+      Improve the implementation based on feedback.
+
+  - agent: gemini
+    role: review
+    prompt_template: |
+      Review and suggest improvements:
+      
+      {current_state}
+      
+      If the code is ready for production, respond with "APPROVED".
+      Otherwise, provide specific suggestions for improvement.
+
+stop_conditions:
+  - type: keyword
+    value: "APPROVED"
+  
+  - type: no_suggestions
+    threshold: 2

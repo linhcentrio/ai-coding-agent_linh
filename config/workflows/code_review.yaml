@@ -1,0 +1,55 @@
+# Code Review Workflow
+# Multiple agents review code in parallel
+
+name: code_review
+description: Parallel code review with multiple perspectives
+
+mode: parallel
+
+agents:
+  - agent: gemini
+    role: security_review
+    prompt_template: |
+      Review the following code for security issues:
+      
+      {task}
+      
+      Focus on:
+      - Input validation
+      - SQL injection risks
+      - XSS vulnerabilities
+      - Authentication/authorization issues
+      
+      Provide specific recommendations.
+
+  - agent: claude
+    role: code_quality
+    prompt_template: |
+      Review the following code for quality and best practices:
+      
+      {task}
+      
+      Focus on:
+      - Code readability
+      - SOLID principles
+      - Error handling
+      - Documentation
+      
+      Provide specific recommendations.
+
+  - agent: codex
+    role: performance
+    prompt_template: |
+      Review the following code for performance:
+      
+      {task}
+      
+      Focus on:
+      - Time complexity
+      - Memory usage
+      - Database queries
+      - Caching opportunities
+      
+      Provide specific recommendations.
+
+merge_strategy: combine

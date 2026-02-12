@@ -1,0 +1,60 @@
+# Example Test Workflow: Login Flow
+# Tests a typical login page
+
+name: login_flow
+description: Test login functionality
+
+base_url: http://localhost:3000
+
+browser:
+  headless: true
+  timeout: 30000
+
+variables:
+  username: testuser
+  password: testpass123
+
+network_filter:
+  - "/api/"
+
+steps:
+  - name: Navigate to login
+    action: navigate
+    value: /login
+    capture_network: false
+
+  - name: Wait for login form
+    action: wait
+    selector: "form[data-testid='login-form']"
+    timeout: 5000
+
+  - name: Enter username
+    action: type
+    selector: "input[name='username']"
+    value: "{{username}}"
+
+  - name: Enter password
+    action: type
+    selector: "input[name='password']"
+    value: "{{password}}"
+
+  - name: Submit login
+    action: click
+    selector: "button[type='submit']"
+    capture_network: true
+
+  - name: Wait for dashboard
+    action: wait
+    selector: "[data-testid='dashboard']"
+    timeout: 10000
+    assert: element_visible
+
+  - name: Verify welcome message
+    action: get_text
+    selector: ".welcome-message"
+    assert: text_contains
+    expected: "Welcome"
+
+  - name: Screenshot dashboard
+    action: screenshot
+    value: dashboard.png

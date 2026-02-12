@@ -1,0 +1,47 @@
+# Implement and Refine Workflow
+# Sequential: Codex implements, Gemini reviews, Claude refines
+
+name: implement_refine
+description: Sequential implementation with review and refinement
+
+mode: sequential
+
+steps:
+  - agent: codex
+    role: implement
+    prompt_template: |
+      Implement the following feature:
+      
+      {task}
+      
+      Write clean, production-ready code with proper error handling.
+      Include inline comments for complex logic.
+
+  - agent: gemini
+    role: review
+    prompt_template: |
+      Review this implementation:
+      
+      {previous_output}
+      
+      Original requirement: {task}
+      
+      Identify:
+      1. Bugs or edge cases
+      2. Missing functionality
+      3. Improvement opportunities
+      
+      Be specific and constructive.
+
+  - agent: claude
+    role: refine
+    prompt_template: |
+      Refine this code based on the review:
+      
+      Original code:
+      {task}
+      
+      Review feedback:
+      {previous_output}
+      
+      Produce the final, improved version.

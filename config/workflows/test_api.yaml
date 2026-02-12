@@ -1,0 +1,54 @@
+# Example Test Workflow: API Testing
+# Test API endpoints with network inspection
+
+name: api_test
+description: Test REST API endpoints
+
+base_url: http://localhost:8000
+
+browser:
+  headless: true
+  timeout: 30000
+
+network_filter:
+  - "/api/"
+  - "/v1/"
+
+steps:
+  - name: Navigate to app
+    action: navigate
+    value: /
+    capture_network: true
+
+  - name: Trigger API call
+    action: click
+    selector: "button[data-action='fetch-data']"
+    capture_network: true
+    assert: response_ok
+
+  - name: Wait for data
+    action: wait
+    selector: "[data-loaded='true']"
+    timeout: 10000
+
+  - name: Verify data displayed
+    action: get_text
+    selector: ".data-container"
+    assert: text_contains
+    expected: "Results"
+
+  - name: Test search
+    action: type
+    selector: "input[name='search']"
+    value: "test query"
+
+  - name: Submit search
+    action: click
+    selector: "button.search-btn"
+    capture_network: true
+
+  - name: Verify search results
+    action: wait
+    selector: ".search-results"
+    timeout: 5000
+    assert: element_visible
